@@ -11,7 +11,7 @@
 //长按
 typedef void(^longPressedAction)();
 
-@interface UIImageView (Scale)
+@interface UIImageView (Zoom)
 //是否允许缩放
 @property (nonatomic) BOOL allowScale;
 //背景色 默认黑色

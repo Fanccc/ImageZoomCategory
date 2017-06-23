@@ -6,9 +6,16 @@
 //  Copyright © 2017年 fanchuan. All rights reserved.
 //
 
-#import "UIImageView+Scale.h"
+#import "UIImageView+Zoom.h"
 #import "AppDelegate.h"
 #import <objc/runtime.h>
+
+
+#define stringFromPoint(x) NSStringFromCGPoint(x)
+#define heightFromFrame(x) x.frame.size.height
+#define widthFromFrame(x)  x.frame.size.width
+#define widthFromRect(x)   x.size.width
+#define heightFromRect(x)   x.size.height
 
 
 //private class
@@ -26,10 +33,11 @@
 //手势
 @property (nonatomic, strong) UITapGestureRecognizer *tapAction;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapAction;
-@property (nonatomic, strong) UIPanGestureRecognizer *panAction;
 @property (nonatomic, copy) longPressedAction longPressedBlock;
 
 @property (nonatomic, assign) BOOL isShow;
+
+@property (nonatomic, assign) BOOL isPan;
 
 @end
 
@@ -74,7 +82,7 @@
 }
 
 - (void)hide{
-    CGRect rect = [self.originalImageView convertRect:self.originalImageView.bounds toView:nil];
+    CGRect rect = [self.originalImageView convertRect:self.originalImageView.bounds toView:[self addToView]];
     [self.originalImageView removeFromSuperview];
     self.originalImageView.frame = rect;
     [[self addToView] addSubview:self.originalImageView];
@@ -106,15 +114,10 @@
             _doubleTapAction = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scroll_doubleTapAction:)];
             _doubleTapAction.numberOfTapsRequired = 2;
         }
-        if(!_panAction){
-            _panAction = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panAction:)];
-        }
         
         [_tapAction requireGestureRecognizerToFail:_doubleTapAction];
         [self.originalImageView addGestureRecognizer:_tapAction];
         [self.originalImageView addGestureRecognizer:_doubleTapAction];
-        [self.originalImageView addGestureRecognizer:_panAction];
-
     }
     _allowScale = allowScale;
 }
@@ -130,28 +133,34 @@
 - (void)panAction:(UIPanGestureRecognizer *)pan{
     if(!_isShow)return;
     
-    UIImageView *imageView = (UIImageView *)pan.view;
-    if (!imageView)return;
+    UIView *panView = pan.view;
     
-    CGPoint imageCenter = [self.originalImageView convertPoint:CGPointMake(self.originalImageView.frame.size.width/2, self.originalImageView.frame.size.height/2) toView:nil];
-    CGFloat offsetY = fabs(imageCenter.y - self.originalImageView.center.y);
-    CGFloat value = offsetY/([self addToView].frame.size.height/2);
-    CGFloat cuurrentAlpha = 1- (value >=1?1:value);
+    if(pan.state == UIGestureRecognizerStateBegan){
+        self.isPan = YES;
+    }
     
-    _scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:cuurrentAlpha];
+    CGPoint position = [pan translationInView:panView];
+    self.originalImageView.transform = CGAffineTransformTranslate(self.originalImageView.transform, position.x, position.y);
+    [pan setTranslation:CGPointZero inView:panView];
     
-    CGPoint position =[pan translationInView:imageView];
+    CGPoint imageCenter = [self.originalImageView convertPoint:CGPointMake(self.originalImageView.bounds.size.width/2, self.originalImageView.bounds.size.height/2) toView:[self addToView]];
     
-    imageView.transform = CGAffineTransformTranslate(imageView.transform, position.x, position.y);
-    [pan setTranslation:CGPointZero inView:imageView];
+    CGFloat offsetY = imageCenter.y;
+    CGFloat offsetValue = offsetY - heightFromFrame(self.scrollView)/2;
+    CGFloat bili = fabs(offsetValue/(heightFromFrame(self.scrollView)/2));
+    CGFloat currentValue = 1 - bili >= 0?1-bili:0;
+    self.scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:currentValue];
+    
+    [self.scrollView setZoomScale:0.8 animated:YES];
     
     if(pan.state == UIGestureRecognizerStateEnded){
-        if(cuurrentAlpha <= 0.3){
+        self.isPan = NO;
+        if(currentValue <= 0.3f){
             [self hide];
         }else{
             [UIView animateWithDuration:0.3f animations:^{
-                _scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:1];
-                imageView.transform = CGAffineTransformIdentity;
+                self.scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:1];
+                self.originalImageView.transform = CGAffineTransformIdentity;
             }];
         }
     }
@@ -161,9 +170,10 @@
     _scrollView = [[UIScrollView alloc] initWithFrame:[self addToView].frame];
     _scrollView.backgroundColor = _bgColor;
     _scrollView.delegate = self;
-    _scrollView.minimumZoomScale = 1;
+    _scrollView.minimumZoomScale = 0.8;
     _scrollView.maximumZoomScale = 4;
     _scrollView.contentSize = [self addToView].frame.size;
+    _scrollView.bouncesZoom = NO;
     
     UITapGestureRecognizer *one_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scroll_tapAction)];
     one_tap.numberOfTapsRequired = 1;
@@ -175,9 +185,8 @@
     [_scrollView addGestureRecognizer:double_tap];
     [_scrollView addGestureRecognizer:longPressed];
     
-    
-//    UIPanGestureRecognizer *pan_Gesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panAction:)];
-//    [_scrollView addGestureRecognizer:pan_Gesture];
+    UIPanGestureRecognizer *pan_Gesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panAction:)];
+    [_scrollView addGestureRecognizer:pan_Gesture];
 }
 
 - (UIView *)addToView{
@@ -226,10 +235,18 @@
     _originalImageView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
 }
 
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale{
+    if(self.isPan)return;
+    if(scale < 1){
+        [scrollView setZoomScale:1 animated:YES];
+    }
+}
+
+
 @end
 
 
-@implementation UIImageView (Scale)
+@implementation UIImageView (Zoom)
 
 - (FCImageViewScaleExtension *)extension{
     FCImageViewScaleExtension *extension = objc_getAssociatedObject(self, _cmd);

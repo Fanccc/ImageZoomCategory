@@ -7,8 +7,9 @@
 //
 
 #import "ViewController.h"
-#import "UIImageView+Scale.h"
+#import "UIImageView+Zoom.h"
 #import "ATableViewCell.h"
+#import "FCImage.h"
 
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -28,7 +29,7 @@
     [self.view addSubview:_imageView];
     _imageView.contentMode = UIViewContentModeScaleAspectFill;
     _imageView.clipsToBounds = YES;
-    _imageView.image = [UIImage imageNamed:@"test_image"];
+    _imageView.image = [UIImage imageNamed:@"longImage"];
     _imageView.allowScale = YES;
     
     return;

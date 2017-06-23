@@ -8,18 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		000F899D1EFA45DC00BA3E53 /* ATableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 000F899C1EFA45DC00BA3E53 /* ATableViewCell.m */; };
+		000F89A01EFA6A6000BA3E53 /* FCImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 000F899F1EFA6A6000BA3E53 /* FCImage.m */; };
 		0064C0E21EF8FD1C00FA8CE5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0064C0E11EF8FD1C00FA8CE5 /* main.m */; };
 		0064C0E51EF8FD1C00FA8CE5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0064C0E41EF8FD1C00FA8CE5 /* AppDelegate.m */; };
 		0064C0E81EF8FD1C00FA8CE5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0064C0E71EF8FD1C00FA8CE5 /* ViewController.m */; };
 		0064C0EB1EF8FD1C00FA8CE5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0064C0E91EF8FD1C00FA8CE5 /* Main.storyboard */; };
 		0064C0ED1EF8FD1C00FA8CE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0064C0EC1EF8FD1C00FA8CE5 /* Assets.xcassets */; };
 		0064C0F01EF8FD1C00FA8CE5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0064C0EE1EF8FD1C00FA8CE5 /* LaunchScreen.storyboard */; };
-		0064C0F91EF8FF0000FA8CE5 /* UIImageView+Scale.m in Sources */ = {isa = PBXBuildFile; fileRef = 0064C0F81EF8FF0000FA8CE5 /* UIImageView+Scale.m */; };
+		0064C0F91EF8FF0000FA8CE5 /* UIImageView+Zoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 0064C0F81EF8FF0000FA8CE5 /* UIImageView+Zoom.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		000F899B1EFA45DC00BA3E53 /* ATableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATableViewCell.h; sourceTree = "<group>"; };
 		000F899C1EFA45DC00BA3E53 /* ATableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ATableViewCell.m; sourceTree = "<group>"; };
+		000F899E1EFA6A6000BA3E53 /* FCImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCImage.h; sourceTree = "<group>"; };
+		000F899F1EFA6A6000BA3E53 /* FCImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCImage.m; sourceTree = "<group>"; };
 		0064C0DD1EF8FD1C00FA8CE5 /* ImageCategry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageCategry.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0064C0E11EF8FD1C00FA8CE5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0064C0E31EF8FD1C00FA8CE5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -30,8 +33,8 @@
 		0064C0EC1EF8FD1C00FA8CE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0064C0EF1EF8FD1C00FA8CE5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0064C0F11EF8FD1C00FA8CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0064C0F71EF8FF0000FA8CE5 /* UIImageView+Scale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+Scale.h"; sourceTree = "<group>"; };
-		0064C0F81EF8FF0000FA8CE5 /* UIImageView+Scale.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Scale.m"; sourceTree = "<group>"; };
+		0064C0F71EF8FF0000FA8CE5 /* UIImageView+Zoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+Zoom.h"; sourceTree = "<group>"; };
+		0064C0F81EF8FF0000FA8CE5 /* UIImageView+Zoom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Zoom.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,8 +73,10 @@
 				0064C0E71EF8FD1C00FA8CE5 /* ViewController.m */,
 				000F899B1EFA45DC00BA3E53 /* ATableViewCell.h */,
 				000F899C1EFA45DC00BA3E53 /* ATableViewCell.m */,
-				0064C0F71EF8FF0000FA8CE5 /* UIImageView+Scale.h */,
-				0064C0F81EF8FF0000FA8CE5 /* UIImageView+Scale.m */,
+				000F899E1EFA6A6000BA3E53 /* FCImage.h */,
+				000F899F1EFA6A6000BA3E53 /* FCImage.m */,
+				0064C0F71EF8FF0000FA8CE5 /* UIImageView+Zoom.h */,
+				0064C0F81EF8FF0000FA8CE5 /* UIImageView+Zoom.m */,
 				0064C0E91EF8FD1C00FA8CE5 /* Main.storyboard */,
 				0064C0EC1EF8FD1C00FA8CE5 /* Assets.xcassets */,
 				0064C0EE1EF8FD1C00FA8CE5 /* LaunchScreen.storyboard */,
@@ -163,7 +168,8 @@
 			files = (
 				000F899D1EFA45DC00BA3E53 /* ATableViewCell.m in Sources */,
 				0064C0E81EF8FD1C00FA8CE5 /* ViewController.m in Sources */,
-				0064C0F91EF8FF0000FA8CE5 /* UIImageView+Scale.m in Sources */,
+				000F89A01EFA6A6000BA3E53 /* FCImage.m in Sources */,
+				0064C0F91EF8FF0000FA8CE5 /* UIImageView+Zoom.m in Sources */,
 				0064C0E51EF8FD1C00FA8CE5 /* AppDelegate.m in Sources */,
 				0064C0E21EF8FD1C00FA8CE5 /* main.m in Sources */,
 			);
