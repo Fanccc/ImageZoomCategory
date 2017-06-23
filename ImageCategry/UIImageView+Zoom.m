@@ -33,6 +33,8 @@
 //手势
 @property (nonatomic, strong) UITapGestureRecognizer *tapAction;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapAction;
+@property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
+
 @property (nonatomic, copy) longPressedAction longPressedBlock;
 
 @property (nonatomic, assign) BOOL isShow;
@@ -70,14 +72,17 @@
     
     UIView *addView = [self addToView];
     CGSize imageSize = CGSizeMake(CGRectGetWidth(addView.frame), CGRectGetWidth(addView.frame)/(_originalImageView.image.size.width/_originalImageView.image.size.height));
+    
+    self.scrollView.contentSize = CGSizeMake(widthFromFrame([self addToView]), MAX(imageSize.height, heightFromFrame([self addToView])));
+    
     [UIView animateWithDuration:0.3f animations:^{
         self.scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:1];
         self.originalImageView.frame = CGRectMake(0, 0, imageSize.width, imageSize.height);
-        self.originalImageView.center = [self addToView].center;
+        self.originalImageView.center = CGPointMake(self.scrollView.contentSize.width/2, self.scrollView.contentSize.height/2);
     } completion:^(BOOL finished) {
         [self.originalImageView removeFromSuperview];
         [self.scrollView addSubview:self.originalImageView];
-        self.originalImageView.center = self.scrollView.center;
+        self.originalImageView.center = CGPointMake(self.scrollView.contentSize.width/2, self.scrollView.contentSize.height/2);
     }];
 }
 
@@ -185,8 +190,8 @@
     [_scrollView addGestureRecognizer:double_tap];
     [_scrollView addGestureRecognizer:longPressed];
     
-    UIPanGestureRecognizer *pan_Gesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panAction:)];
-    [_scrollView addGestureRecognizer:pan_Gesture];
+    _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panAction:)];
+    [_scrollView addGestureRecognizer:_panGesture];
 }
 
 - (UIView *)addToView{

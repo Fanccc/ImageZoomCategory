@@ -10,8 +10,9 @@
 #import "UIImageView+Zoom.h"
 #import "ATableViewCell.h"
 #import "FCImage.h"
+#import "SubScrollView.h"
 
-@interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIImageView *imageView;
 
@@ -29,7 +30,7 @@
     [self.view addSubview:_imageView];
     _imageView.contentMode = UIViewContentModeScaleAspectFill;
     _imageView.clipsToBounds = YES;
-    _imageView.image = [UIImage imageNamed:@"longImage"];
+    _imageView.image = [UIImage imageNamed:@"test_image"];//test_image
     _imageView.allowScale = YES;
     
     return;
@@ -38,6 +39,10 @@
     _tableView.delegate = self;
     _tableView.dataSource = self;
     [self.view addSubview:_tableView];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    NSLog(@"scroll");
 }
 
 
