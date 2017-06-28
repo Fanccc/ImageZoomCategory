@@ -16,7 +16,7 @@
 		0064C0ED1EF8FD1C00FA8CE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0064C0EC1EF8FD1C00FA8CE5 /* Assets.xcassets */; };
 		0064C0F01EF8FD1C00FA8CE5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0064C0EE1EF8FD1C00FA8CE5 /* LaunchScreen.storyboard */; };
 		0064C0F91EF8FF0000FA8CE5 /* UIImageView+Zoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 0064C0F81EF8FF0000FA8CE5 /* UIImageView+Zoom.m */; };
-		0087AE771EFD0087003B6FCF /* SubScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0087AE761EFD0087003B6FCF /* SubScrollView.m */; };
+		0087AE7A1EFD21E2003B6FCF /* CustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0087AE791EFD21E2003B6FCF /* CustomScrollView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,8 +36,8 @@
 		0064C0F11EF8FD1C00FA8CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0064C0F71EF8FF0000FA8CE5 /* UIImageView+Zoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+Zoom.h"; sourceTree = "<group>"; };
 		0064C0F81EF8FF0000FA8CE5 /* UIImageView+Zoom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Zoom.m"; sourceTree = "<group>"; };
-		0087AE751EFD0087003B6FCF /* SubScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubScrollView.h; sourceTree = "<group>"; };
-		0087AE761EFD0087003B6FCF /* SubScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubScrollView.m; sourceTree = "<group>"; };
+		0087AE781EFD21E2003B6FCF /* CustomScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomScrollView.h; sourceTree = "<group>"; };
+		0087AE791EFD21E2003B6FCF /* CustomScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomScrollView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,8 +76,8 @@
 				0064C0E71EF8FD1C00FA8CE5 /* ViewController.m */,
 				000F899B1EFA45DC00BA3E53 /* ATableViewCell.h */,
 				000F899C1EFA45DC00BA3E53 /* ATableViewCell.m */,
-				0087AE751EFD0087003B6FCF /* SubScrollView.h */,
-				0087AE761EFD0087003B6FCF /* SubScrollView.m */,
+				0087AE781EFD21E2003B6FCF /* CustomScrollView.h */,
+				0087AE791EFD21E2003B6FCF /* CustomScrollView.m */,
 				000F899E1EFA6A6000BA3E53 /* FCImage.h */,
 				000F899F1EFA6A6000BA3E53 /* FCImage.m */,
 				0064C0F71EF8FF0000FA8CE5 /* UIImageView+Zoom.h */,
@@ -171,10 +171,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0087AE771EFD0087003B6FCF /* SubScrollView.m in Sources */,
 				000F899D1EFA45DC00BA3E53 /* ATableViewCell.m in Sources */,
 				0064C0E81EF8FD1C00FA8CE5 /* ViewController.m in Sources */,
 				000F89A01EFA6A6000BA3E53 /* FCImage.m in Sources */,
+				0087AE7A1EFD21E2003B6FCF /* CustomScrollView.m in Sources */,
 				0064C0F91EF8FF0000FA8CE5 /* UIImageView+Zoom.m in Sources */,
 				0064C0E51EF8FD1C00FA8CE5 /* AppDelegate.m in Sources */,
 				0064C0E21EF8FD1C00FA8CE5 /* main.m in Sources */,

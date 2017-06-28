@@ -10,4 +10,6 @@
 
 @interface CustomScrollView : UIScrollView
 
+@property (nonatomic, copy)void(^subViewBeginDismiss)(UIPanGestureRecognizer *);
+
 @end

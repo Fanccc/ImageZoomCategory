@@ -9,7 +9,6 @@
 #import "UIImageView+Zoom.h"
 #import "AppDelegate.h"
 #import <objc/runtime.h>
-#import "CustomScrollView.h"
 
 #define stringFromPoint(x) NSStringFromCGPoint(x)
 #define heightFromFrame(x) x.frame.size.height
@@ -28,18 +27,15 @@
 @property (nonatomic, assign) CGRect startRect;
 @property (nonatomic, assign) CGRect startAnimationRect;
 
-@property (nonatomic, strong) CustomScrollView *scrollView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 
 //手势
 @property (nonatomic, strong) UITapGestureRecognizer *tapAction;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapAction;
-@property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 
 @property (nonatomic, copy) longPressedAction longPressedBlock;
 
 @property (nonatomic, assign) BOOL isShow;
-
-@property (nonatomic, assign) BOOL isPan;
 
 @end
 
@@ -135,50 +131,13 @@
     }
 }
 
-- (void)panAction:(UIPanGestureRecognizer *)pan{
-    if(!_isShow)return;
-    
-    UIView *panView = pan.view;
-    
-    if(pan.state == UIGestureRecognizerStateBegan){
-        self.isPan = YES;
-    }
-    
-    CGPoint position = [pan translationInView:panView];
-    self.originalImageView.transform = CGAffineTransformTranslate(self.originalImageView.transform, position.x, position.y);
-    [pan setTranslation:CGPointZero inView:panView];
-    
-    CGPoint imageCenter = [self.originalImageView convertPoint:CGPointMake(self.originalImageView.bounds.size.width/2, self.originalImageView.bounds.size.height/2) toView:[self addToView]];
-    
-    CGFloat offsetY = imageCenter.y;
-    CGFloat offsetValue = offsetY - heightFromFrame(self.scrollView)/2;
-    CGFloat bili = fabs(offsetValue/(heightFromFrame(self.scrollView)/2));
-    CGFloat currentValue = 1 - bili >= 0?1-bili:0;
-    self.scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:currentValue];
-    
-    [self.scrollView setZoomScale:0.8 animated:YES];
-    
-    if(pan.state == UIGestureRecognizerStateEnded){
-        self.isPan = NO;
-        if(currentValue <= 0.3f){
-            [self hide];
-        }else{
-            [UIView animateWithDuration:0.3f animations:^{
-                self.scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:1];
-                self.originalImageView.transform = CGAffineTransformIdentity;
-            }];
-        }
-    }
-}
-
 - (void)configScrollView{
-    _scrollView = [[CustomScrollView alloc] initWithFrame:[self addToView].frame];
+    _scrollView = [[UIScrollView alloc] initWithFrame:[self addToView].frame];
     _scrollView.backgroundColor = _bgColor;
     _scrollView.delegate = self;
-    _scrollView.minimumZoomScale = 0.8;
+    _scrollView.minimumZoomScale = 1;
     _scrollView.maximumZoomScale = 4;
     _scrollView.contentSize = [self addToView].frame.size;
-    _scrollView.bouncesZoom = NO;
     
     UITapGestureRecognizer *one_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scroll_tapAction)];
     one_tap.numberOfTapsRequired = 1;
@@ -189,9 +148,6 @@
     [_scrollView addGestureRecognizer:one_tap];
     [_scrollView addGestureRecognizer:double_tap];
     [_scrollView addGestureRecognizer:longPressed];
-    
-    _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panAction:)];
-    [_scrollView addGestureRecognizer:_panGesture];
 }
 
 - (UIView *)addToView{
@@ -209,16 +165,16 @@
 }
 
 - (void)scroll_doubleTapAction:(UITapGestureRecognizer *)tap{
-    if(_isShow){
-        if (_scrollView.zoomScale > 1.0) {
-            [_scrollView setZoomScale:1.0 animated:YES];
-        } else {
-            CGPoint touchPoint = [tap locationInView:self.originalImageView];
-            CGFloat newZoomScale = _scrollView.maximumZoomScale;
-            CGFloat xsize = self.scrollView.frame.size.width / newZoomScale;
-            CGFloat ysize = self.scrollView.frame.size.height / newZoomScale;
-            [_scrollView zoomToRect:CGRectMake(touchPoint.x - xsize/2, touchPoint.y - ysize/2, xsize, ysize) animated:YES];
-        }
+    if(!_isShow)return;
+        
+    if (_scrollView.zoomScale > 1.0) {
+        [_scrollView setZoomScale:1.0 animated:YES];
+    } else {
+        CGPoint touchPoint = [tap locationInView:self.originalImageView];
+        CGFloat newZoomScale = _scrollView.maximumZoomScale;
+            CGFloat xsize = self.scrollView.frame.size.width /newZoomScale;
+        CGFloat ysize = self.scrollView.frame.size.height / newZoomScale;
+        [_scrollView zoomToRect:CGRectMake(touchPoint.x - xsize/2, touchPoint.y - ysize/2, xsize, ysize) animated:YES];
     }
 }
 
@@ -239,14 +195,6 @@
     CGFloat offsetY = (scrollView.frame.size.height > scrollView.contentSize.height) ? (scrollView.frame.size.height - scrollView.contentSize.height) * 0.5 : 0.0;
     _originalImageView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
 }
-
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(CGFloat)scale{
-    if(self.isPan)return;
-    if(scale < 1){
-        [scrollView setZoomScale:1 animated:YES];
-    }
-}
-
 
 @end
 
