@@ -9,7 +9,7 @@
 #import "UIImageView+Zoom.h"
 #import "AppDelegate.h"
 #import <objc/runtime.h>
-
+#import "CustomScrollView.h"
 
 #define stringFromPoint(x) NSStringFromCGPoint(x)
 #define heightFromFrame(x) x.frame.size.height
@@ -28,7 +28,7 @@
 @property (nonatomic, assign) CGRect startRect;
 @property (nonatomic, assign) CGRect startAnimationRect;
 
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) CustomScrollView *scrollView;
 
 //手势
 @property (nonatomic, strong) UITapGestureRecognizer *tapAction;
@@ -172,7 +172,7 @@
 }
 
 - (void)configScrollView{
-    _scrollView = [[UIScrollView alloc] initWithFrame:[self addToView].frame];
+    _scrollView = [[CustomScrollView alloc] initWithFrame:[self addToView].frame];
     _scrollView.backgroundColor = _bgColor;
     _scrollView.delegate = self;
     _scrollView.minimumZoomScale = 0.8;

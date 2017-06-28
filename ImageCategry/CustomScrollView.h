@@ -1,5 +1,5 @@
 //
-//  SubScrollView.h
+//  CustomScrollView.h
 //  ImageCategry
 //
 //  Created by fanchuan on 2017/6/23.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SubScrollView : UIScrollView
+@interface CustomScrollView : UIScrollView
 
 @end
