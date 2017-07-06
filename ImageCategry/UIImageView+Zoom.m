@@ -14,14 +14,15 @@
 #define heightFromFrame(x) x.frame.size.height
 #define widthFromFrame(x)  x.frame.size.width
 #define widthFromRect(x)   x.size.width
-#define heightFromRect(x)   x.size.height
+#define heightFromRect(x)  x.size.height
 
 
 //private class
-@interface FCImageViewScaleExtension : NSObject<UIScrollViewDelegate>
+@interface FCImageViewScaleExtension : NSObject<UIScrollViewDelegate,UIGestureRecognizerDelegate>
 
 @property (nonatomic, assign) BOOL allowScale;
 @property (nonatomic, strong) UIColor *bgColor;
+@property (nonatomic, strong) UIView *imageContainerView;
 @property (nonatomic, strong) UIImageView *originalImageView;
 @property (nonatomic, strong) UIView *originalImageViewSuperView;
 @property (nonatomic, assign) CGRect startRect;
@@ -58,28 +59,25 @@
     
     _startRect = _originalImageView.frame;
     _startAnimationRect = [self imageViewFrameOnKeyWindow];
-    
-    self.originalImageViewSuperView = _originalImageView.superview;
-    [_originalImageView removeFromSuperview];
-    _originalImageView.frame = _startAnimationRect;
-    [[self addToView] addSubview:self.scrollView];
-    [[self addToView] addSubview:_originalImageView];
-    self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:0];
+    _originalImageViewSuperView = _originalImageView.superview;
     
     UIView *addView = [self addToView];
-    CGSize imageSize = CGSizeMake(CGRectGetWidth(addView.frame), CGRectGetWidth(addView.frame)/(_originalImageView.image.size.width/_originalImageView.image.size.height));
+    [_originalImageView removeFromSuperview];
+    _originalImageView.frame = _startAnimationRect;
+    [addView addSubview:self.scrollView];
+    self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:0];
     
-    self.scrollView.contentSize = CGSizeMake(widthFromFrame([self addToView]), MAX(imageSize.height, heightFromFrame([self addToView])));
+    CGSize imageSize = CGSizeMake(widthFromFrame(addView), widthFromFrame(addView)/(_originalImageView.image.size.width/_originalImageView.image.size.height));
+    CGSize contentSize = CGSizeMake(widthFromFrame(addView), MAX(imageSize.height, heightFromFrame(addView)));
+    self.scrollView.contentSize = contentSize;
+    self.imageContainerView.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);
+    [self.imageContainerView addSubview:_originalImageView];
     
     [UIView animateWithDuration:0.3f animations:^{
         self.scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:1];
         self.originalImageView.frame = CGRectMake(0, 0, imageSize.width, imageSize.height);
-        self.originalImageView.center = CGPointMake(self.scrollView.contentSize.width/2, self.scrollView.contentSize.height/2);
-    } completion:^(BOOL finished) {
-        [self.originalImageView removeFromSuperview];
-        [self.scrollView addSubview:self.originalImageView];
-        self.originalImageView.center = CGPointMake(self.scrollView.contentSize.width/2, self.scrollView.contentSize.height/2);
-    }];
+        self.originalImageView.center = self.imageContainerView.center;
+    } completion:nil];
 }
 
 - (void)hide{
@@ -97,6 +95,7 @@
         self.originalImageView.transform = CGAffineTransformIdentity;
         [self.originalImageView removeFromSuperview];
         [self.scrollView removeFromSuperview];
+        [self.scrollView setContentOffset:CGPointMake(0, 0)];
         self.originalImageView.frame = self.startRect;
         [self.originalImageViewSuperView addSubview:self.originalImageView];
     }];
@@ -148,6 +147,10 @@
     [_scrollView addGestureRecognizer:one_tap];
     [_scrollView addGestureRecognizer:double_tap];
     [_scrollView addGestureRecognizer:longPressed];
+    
+    _imageContainerView = [[UIView alloc] init];
+    _imageContainerView.clipsToBounds = YES;
+    [_scrollView addSubview:_imageContainerView];
 }
 
 - (UIView *)addToView{
@@ -187,13 +190,13 @@
 }
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{
-    return _originalImageView;
+    return _imageContainerView;
 }
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
     CGFloat offsetX = (scrollView.frame.size.width > scrollView.contentSize.width) ? (scrollView.frame.size.width - scrollView.contentSize.width) * 0.5 : 0.0;
     CGFloat offsetY = (scrollView.frame.size.height > scrollView.contentSize.height) ? (scrollView.frame.size.height - scrollView.contentSize.height) * 0.5 : 0.0;
-    _originalImageView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
+    _imageContainerView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
 }
 
 @end
