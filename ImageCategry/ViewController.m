@@ -29,8 +29,10 @@
     [self.view addSubview:_imageView];
     _imageView.contentMode = UIViewContentModeScaleAspectFill;
     _imageView.clipsToBounds = YES;
-    _imageView.image = [UIImage imageNamed:@"longImage"];//test_image
+    _imageView.image = [UIImage imageNamed:@"longImage"];
+    //test_image
     //longImage
+    //dddddd
     _imageView.allowScale = YES;
     
     return;

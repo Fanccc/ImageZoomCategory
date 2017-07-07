@@ -16,6 +16,20 @@
 #define widthFromRect(x)   x.size.width
 #define heightFromRect(x)  x.size.height
 
+#define scrollViewScaleGoBegin \
+[self.scrollView setZoomScale:1 animated:YES];\
+[UIView animateWithDuration:0.2f animations:^{\
+    self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:1];\
+}];\
+if(self.scrollView.zoomScale == 1){ \
+  if(self.scrollView.zoomScale == 1){ \
+     [UIView animateWithDuration:0.3f animations:^{ \
+        pan.view.transform = CGAffineTransformIdentity;\
+     }]; \
+   }else{ \
+     pan.view.transform = CGAffineTransformIdentity;\
+  }\
+} \
 
 //private class
 @interface FCImageViewScaleExtension : NSObject<UIScrollViewDelegate,UIGestureRecognizerDelegate>
@@ -41,6 +55,59 @@
 @end
 
 @implementation FCImageViewScaleExtension
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    if([gestureRecognizer.view isEqual:self.scrollView]){
+        return NO;
+    }
+    return YES;
+}
+
+- (void)panAction:(UIPanGestureRecognizer *)pan{
+    if(!_isShow)return;
+
+    CGFloat startZoomScale = self.scrollView.zoomScale;
+    
+    CGRect currentSize =[self.originalImageView convertRect:self.originalImageView .bounds toView:[self addToView]];
+    if(currentSize.origin.y < 0){
+        if((pan.state == UIGestureRecognizerStateFailed
+         || pan.state == UIGestureRecognizerStateEnded)
+         && (currentSize.size.height + currentSize.origin.y <= heightFromFrame([self addToView])
+         || currentSize.origin.x >=0
+         || (currentSize.size.width + currentSize.origin.x) <= widthFromFrame([self addToView]))){
+             scrollViewScaleGoBegin
+             [self.scrollView setZoomScale:startZoomScale animated:YES];
+        }
+        return;
+    }
+    
+    if(pan.state == UIGestureRecognizerStateChanged){
+        CGPoint point = [pan translationInView:pan.view];
+        pan.view.transform = CGAffineTransformTranslate(pan.view.transform, point.x, point.y);
+        [pan setTranslation:CGPointZero inView:pan.view];
+        
+        CGRect panViewRect = [pan.view convertRect:pan.view.bounds toView:[self addToView]];
+        CGFloat y =  panViewRect.origin.y;
+        if(y <= 0){
+            self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:1];
+        }else{
+            self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:MAX(0.3,1 - 2*y/heightFromFrame([self addToView]))];
+        }
+    }else if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateFailed){
+        if(currentSize.origin.y >= heightFromFrame([self addToView])/2){
+            [self hide];
+        }else{
+           scrollViewScaleGoBegin
+           [self.scrollView setZoomScale:startZoomScale animated:YES];
+        }
+    }
+}
+
+- (void)addPan{
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panAction:)];
+    pan.delegate = self;
+    [self.imageContainerView addGestureRecognizer:pan];
+}
 
 - (instancetype)init{
     if(self = [super init]){
@@ -69,6 +136,7 @@
     
     CGSize imageSize = CGSizeMake(widthFromFrame(addView), widthFromFrame(addView)/(_originalImageView.image.size.width/_originalImageView.image.size.height));
     CGSize contentSize = CGSizeMake(widthFromFrame(addView), MAX(imageSize.height, heightFromFrame(addView)));
+    
     self.scrollView.contentSize = contentSize;
     self.imageContainerView.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);
     [self.imageContainerView addSubview:_originalImageView];
@@ -92,7 +160,7 @@
     } completion:^(BOOL finished) {
         self.isShow = NO;
         self.scrollView.zoomScale = 1;
-        self.originalImageView.transform = CGAffineTransformIdentity;
+        self.imageContainerView.transform = CGAffineTransformIdentity;
         [self.originalImageView removeFromSuperview];
         [self.scrollView removeFromSuperview];
         [self.scrollView setContentOffset:CGPointMake(0, 0)];
@@ -151,6 +219,8 @@
     _imageContainerView = [[UIView alloc] init];
     _imageContainerView.clipsToBounds = YES;
     [_scrollView addSubview:_imageContainerView];
+    
+    [self addPan];
 }
 
 - (UIView *)addToView{
