@@ -77,7 +77,7 @@ if(self.scrollView.zoomScale == 1){ \
          || (currentSize.size.width + currentSize.origin.x) <= widthFromFrame([self addToView]))){
              scrollViewScaleGoBegin
              [self.scrollView setZoomScale:startZoomScale animated:YES];
-        }
+         }
         return;
     }
     
@@ -243,7 +243,7 @@ if(self.scrollView.zoomScale == 1){ \
     if (_scrollView.zoomScale > 1.0) {
         [_scrollView setZoomScale:1.0 animated:YES];
     } else {
-        CGPoint touchPoint = [tap locationInView:self.originalImageView];
+        CGPoint touchPoint = [tap locationInView:self.imageContainerView];
         CGFloat newZoomScale = _scrollView.maximumZoomScale;
             CGFloat xsize = self.scrollView.frame.size.width /newZoomScale;
         CGFloat ysize = self.scrollView.frame.size.height / newZoomScale;
