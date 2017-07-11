@@ -65,6 +65,8 @@ if(self.scrollView.zoomScale == 1){ \
 
 - (void)panAction:(UIPanGestureRecognizer *)pan{
     if(!_isShow)return;
+    //当scale != 1 时下拉有回弹感.体验差
+    if(self.scrollView.zoomScale != 1)return;
 
     CGFloat startZoomScale = self.scrollView.zoomScale;
     
