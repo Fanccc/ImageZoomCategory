@@ -56,59 +56,9 @@ if(self.scrollView.zoomScale == 1){ \
 
 @implementation FCImageViewScaleExtension
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-    if([gestureRecognizer.view isEqual:self.scrollView]){
-        return NO;
-    }
-    return YES;
-}
-
 - (void)panAction:(UIPanGestureRecognizer *)pan{
     if(!_isShow)return;
-    //当scale != 1 时下拉有回弹感.体验差
-    if(self.scrollView.zoomScale != 1)return;
-
-    CGFloat startZoomScale = self.scrollView.zoomScale;
-    
-    CGRect currentSize =[self.originalImageView convertRect:self.originalImageView.bounds toView:[self addToView]];
-    if(currentSize.origin.y < 0){
-        if((pan.state == UIGestureRecognizerStateFailed
-         || pan.state == UIGestureRecognizerStateEnded)
-         && (currentSize.size.height + currentSize.origin.y <= heightFromFrame([self addToView])
-         || currentSize.origin.x >=0
-         || (currentSize.size.width + currentSize.origin.x) <= widthFromFrame([self addToView]))){
-             scrollViewScaleGoBegin
-             [self.scrollView setZoomScale:startZoomScale animated:YES];
-         }
-        return;
-    }
-    
-    if(pan.state == UIGestureRecognizerStateChanged){
-        CGPoint point = [pan translationInView:pan.view];
-        pan.view.transform = CGAffineTransformTranslate(pan.view.transform, point.x, point.y);
-        [pan setTranslation:CGPointZero inView:pan.view];
-        
-        CGRect panViewRect = [pan.view convertRect:pan.view.bounds toView:[self addToView]];
-        CGFloat y =  panViewRect.origin.y;
-        if(y <= 0){
-            self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:1];
-        }else{
-            self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:MAX(0.3,1 - 2*y/heightFromFrame([self addToView]))];
-        }
-    }else if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateFailed){
-        if(currentSize.origin.y >= heightFromFrame([self addToView])/2){
-            [self hide];
-        }else{
-           scrollViewScaleGoBegin
-           [self.scrollView setZoomScale:startZoomScale animated:YES];
-        }
-    }
-}
-
-- (void)addPan{
-    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panAction:)];
-    pan.delegate = self;
-    [self.imageContainerView addGestureRecognizer:pan];
+    NSLog(@"pan action");
 }
 
 - (instancetype)init{
@@ -221,8 +171,6 @@ if(self.scrollView.zoomScale == 1){ \
     _imageContainerView = [[UIView alloc] init];
     _imageContainerView.clipsToBounds = YES;
     [_scrollView addSubview:_imageContainerView];
-    
-    [self addPan];
 }
 
 - (UIView *)addToView{
@@ -261,6 +209,7 @@ if(self.scrollView.zoomScale == 1){ \
     }
 }
 
+#pragma mark - scrollview delegate
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{
     return _imageContainerView;
 }
