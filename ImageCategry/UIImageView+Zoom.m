@@ -70,7 +70,7 @@ if(self.scrollView.zoomScale == 1){ \
 
     CGFloat startZoomScale = self.scrollView.zoomScale;
     
-    CGRect currentSize =[self.originalImageView convertRect:self.originalImageView .bounds toView:[self addToView]];
+    CGRect currentSize =[self.originalImageView convertRect:self.originalImageView.bounds toView:[self addToView]];
     if(currentSize.origin.y < 0){
         if((pan.state == UIGestureRecognizerStateFailed
          || pan.state == UIGestureRecognizerStateEnded)
