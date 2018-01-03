@@ -35,22 +35,10 @@
 @property (nonatomic, strong) UITapGestureRecognizer *tapAction;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapAction;
 @property (nonatomic, copy) longPressedAction longPressedBlock;
-//下拉相关
-@property (nonatomic,strong) UIImageView *moveImage;//拖拽时的展示image
-@property (nonatomic,assign) BOOL doingPan;//正在拖拽
-@property (nonatomic,assign) BOOL doingZoom;//正在缩放
-
 
 @end
 
 @implementation FCImageViewScaleExtension
-
-- (void)panAction:(UIPanGestureRecognizer *)pan{
-    if(!_isShow)return;
-}
-
-- (void)endPan{
-}
 
 - (instancetype)init{
     if(self = [super init]){
@@ -146,8 +134,6 @@
     _scrollView.minimumZoomScale = 1;
     _scrollView.maximumZoomScale = 4;
     _scrollView.contentSize = self.containerView.size;
-    _scrollView.alwaysBounceVertical = YES;
-    _scrollView.alwaysBounceHorizontal = YES;
     
     UITapGestureRecognizer *one_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scroll_tapAction)];
     one_tap.numberOfTapsRequired = 1;
@@ -202,12 +188,6 @@
 }
 
 #pragma mark - scrollview delegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    if ((scrollView.contentOffset.y < 0 || self.doingPan) && (self.doingZoom == NO)){
-        [self panAction:scrollView.panGestureRecognizer];
-    }
-}
-
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{
     return _imageContainerView;
 }
@@ -216,17 +196,6 @@
     CGFloat offsetX = (scrollView.frame.size.width > scrollView.contentSize.width) ? (scrollView.frame.size.width - scrollView.contentSize.width) * 0.5 : 0.0;
     CGFloat offsetY = (scrollView.frame.size.height > scrollView.contentSize.height) ? (scrollView.frame.size.height - scrollView.contentSize.height) * 0.5 : 0.0;
     _imageContainerView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
-    
-    self.doingZoom = NO;
-}
-
-- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view{
-    self.doingZoom = YES;
-}
-
-//结束拖拽
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
-    [self endPan];
 }
 
 @end

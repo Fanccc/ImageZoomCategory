@@ -18,6 +18,7 @@
 		0064C0F91EF8FF0000FA8CE5 /* UIImageView+Zoom.m in Sources */ = {isa = PBXBuildFile; fileRef = 0064C0F81EF8FF0000FA8CE5 /* UIImageView+Zoom.m */; };
 		0087AE7A1EFD21E2003B6FCF /* CustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0087AE791EFD21E2003B6FCF /* CustomScrollView.m */; };
 		00FBAC231FFCC30200E2B438 /* UIView+Sizes.m in Sources */ = {isa = PBXBuildFile; fileRef = 00FBAC221FFCC30200E2B438 /* UIView+Sizes.m */; };
+		00FBAC261FFCDE5D00E2B438 /* BViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00FBAC251FFCDE5D00E2B438 /* BViewController.m */; };
 		C78D409F6BC8A019E5D94C3C /* libPods-ImageCategry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADC114714FB114C4D773DDBC /* libPods-ImageCategry.a */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,8 @@
 		0087AE791EFD21E2003B6FCF /* CustomScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomScrollView.m; sourceTree = "<group>"; };
 		00FBAC211FFCC30100E2B438 /* UIView+Sizes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Sizes.h"; sourceTree = "<group>"; };
 		00FBAC221FFCC30200E2B438 /* UIView+Sizes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Sizes.m"; sourceTree = "<group>"; };
+		00FBAC241FFCDE5D00E2B438 /* BViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BViewController.h; sourceTree = "<group>"; };
+		00FBAC251FFCDE5D00E2B438 /* BViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BViewController.m; sourceTree = "<group>"; };
 		12032B23DD9FB4297C9E7C79 /* Pods-ImageCategry.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImageCategry.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ImageCategry/Pods-ImageCategry.debug.xcconfig"; sourceTree = "<group>"; };
 		ADC114714FB114C4D773DDBC /* libPods-ImageCategry.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ImageCategry.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CFBA725FCE9B9DF5CA91B5E8 /* Pods-ImageCategry.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImageCategry.release.xcconfig"; path = "Pods/Target Support Files/Pods-ImageCategry/Pods-ImageCategry.release.xcconfig"; sourceTree = "<group>"; };
@@ -84,6 +87,8 @@
 				0064C0E41EF8FD1C00FA8CE5 /* AppDelegate.m */,
 				0064C0E61EF8FD1C00FA8CE5 /* ViewController.h */,
 				0064C0E71EF8FD1C00FA8CE5 /* ViewController.m */,
+				00FBAC241FFCDE5D00E2B438 /* BViewController.h */,
+				00FBAC251FFCDE5D00E2B438 /* BViewController.m */,
 				000F899B1EFA45DC00BA3E53 /* ATableViewCell.h */,
 				000F899C1EFA45DC00BA3E53 /* ATableViewCell.m */,
 				0087AE781EFD21E2003B6FCF /* CustomScrollView.h */,
@@ -255,6 +260,7 @@
 				0064C0E81EF8FD1C00FA8CE5 /* ViewController.m in Sources */,
 				000F89A01EFA6A6000BA3E53 /* FCImage.m in Sources */,
 				00FBAC231FFCC30200E2B438 /* UIView+Sizes.m in Sources */,
+				00FBAC261FFCDE5D00E2B438 /* BViewController.m in Sources */,
 				0087AE7A1EFD21E2003B6FCF /* CustomScrollView.m in Sources */,
 				0064C0F91EF8FF0000FA8CE5 /* UIImageView+Zoom.m in Sources */,
 				0064C0E51EF8FD1C00FA8CE5 /* AppDelegate.m in Sources */,

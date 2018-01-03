@@ -10,6 +10,7 @@
 #import "UIImageView+Zoom.h"
 #import "ATableViewCell.h"
 #import "FCImage.h"
+#import "BViewController.h"
 
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
 
@@ -34,14 +35,16 @@
     //longImage
     //longImage_v
     _imageView.browseEnabled = YES;
-    
+
     return;
-    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 340, self.view.frame.size.width, self.view.frame.size.height - 340) style:UITableViewStylePlain];
-    [_tableView registerClass:[ATableViewCell class] forCellReuseIdentifier:@"a"];
-    _tableView.delegate = self;
-    _tableView.dataSource = self;
-    [self.view addSubview:_tableView];
+//    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
+//    [_tableView registerClass:[ATableViewCell class] forCellReuseIdentifier:@"a"];
+//    _tableView.delegate = self;
+//    _tableView.dataSource = self;
+//    [self.view addSubview:_tableView];
 }
+
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     NSLog(@"scroll");
@@ -57,5 +60,13 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    BViewController *b = [[BViewController alloc] init];
+    [self.navigationController pushViewController:b animated:YES];
+}
+
+- (BOOL)prefersStatusBarHidden{
+    return NO;
+}
 
 @end
