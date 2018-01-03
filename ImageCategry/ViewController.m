@@ -33,7 +33,7 @@
     //test_image
     //longImage
     //longImage_v
-    _imageView.allowScale = YES;
+    _imageView.browseEnabled = YES;
     
     return;
     _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 340, self.view.frame.size.width, self.view.frame.size.height - 340) style:UITableViewStylePlain];

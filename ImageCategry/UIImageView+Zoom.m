@@ -8,49 +8,38 @@
 
 #import "UIImageView+Zoom.h"
 #import "AppDelegate.h"
+#import "UIView+Sizes.h"
 #import <objc/runtime.h>
 
 #define stringFromPoint(x) NSStringFromCGPoint(x)
-#define heightFromFrame(x) x.frame.size.height
-#define widthFromFrame(x)  x.frame.size.width
-#define widthFromRect(x)   x.size.width
-#define heightFromRect(x)  x.size.height
-
-#define scrollViewScaleGoBegin \
-[self.scrollView setZoomScale:1 animated:YES];\
-[UIView animateWithDuration:0.2f animations:^{\
-    self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:1];\
-}];\
-if(self.scrollView.zoomScale == 1){ \
-  if(self.scrollView.zoomScale == 1){ \
-     [UIView animateWithDuration:0.3f animations:^{ \
-        pan.view.transform = CGAffineTransformIdentity;\
-     }]; \
-   }else{ \
-     pan.view.transform = CGAffineTransformIdentity;\
-  }\
-} \
+/** 设备屏幕宽 */
+#define kMainScreenWidth  [UIScreen mainScreen].bounds.size.width
+/** 设备屏幕高度 */
+#define kMainScreenHeight [UIScreen mainScreen].bounds.size.height
 
 //private class
 @interface FCImageViewScaleExtension : NSObject<UIScrollViewDelegate,UIGestureRecognizerDelegate>
-
-@property (nonatomic, assign) BOOL allowScale;
-@property (nonatomic, strong) UIColor *bgColor;
+//容器视图
+@property (nonatomic, strong) UIView *containerView;
+//放大相关
+@property (nonatomic, assign) BOOL browseEnabled;
+@property (nonatomic, assign) BOOL isShow;
+@property (nonatomic, strong) UIColor *backgroundColor;
 @property (nonatomic, strong) UIView *imageContainerView;
-@property (nonatomic, strong) UIImageView *originalImageView;
-@property (nonatomic, strong) UIView *originalImageViewSuperView;
+@property (nonatomic, strong) UIImageView *sourceImageView;
+@property (nonatomic, strong) UIView *sourceImageViewSuperView;
 @property (nonatomic, assign) CGRect startRect;
 @property (nonatomic, assign) CGRect startAnimationRect;
-
 @property (nonatomic, strong) UIScrollView *scrollView;
-
 //手势
 @property (nonatomic, strong) UITapGestureRecognizer *tapAction;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTapAction;
-
 @property (nonatomic, copy) longPressedAction longPressedBlock;
+//下拉相关
+@property (nonatomic,strong) UIImageView *moveImage;//拖拽时的展示image
+@property (nonatomic,assign) BOOL doingPan;//正在拖拽
+@property (nonatomic,assign) BOOL doingZoom;//正在缩放
 
-@property (nonatomic, assign) BOOL isShow;
 
 @end
 
@@ -58,12 +47,14 @@ if(self.scrollView.zoomScale == 1){ \
 
 - (void)panAction:(UIPanGestureRecognizer *)pan{
     if(!_isShow)return;
-    NSLog(@"pan action");
+}
+
+- (void)endPan{
 }
 
 - (instancetype)init{
     if(self = [super init]){
-        _bgColor = [UIColor blackColor];
+        _backgroundColor = [UIColor blackColor];
         _isShow = NO;
     }
     return self;
@@ -76,56 +67,54 @@ if(self.scrollView.zoomScale == 1){ \
     
     _isShow = YES;
     
-    _startRect = _originalImageView.frame;
+    _startRect = _sourceImageView.frame;
     _startAnimationRect = [self imageViewFrameOnKeyWindow];
-    _originalImageViewSuperView = _originalImageView.superview;
+    _sourceImageViewSuperView = _sourceImageView.superview;
     
-    UIView *addView = [self addToView];
-    [_originalImageView removeFromSuperview];
-    _originalImageView.frame = _startAnimationRect;
-    [addView addSubview:self.scrollView];
-    self.scrollView.backgroundColor = [_bgColor colorWithAlphaComponent:0];
+    [_sourceImageView removeFromSuperview];
+    _sourceImageView.frame = _startAnimationRect;
+    [self.containerView addSubview:_scrollView];
+    _scrollView.backgroundColor = [_backgroundColor colorWithAlphaComponent:0];
     
-    CGSize imageSize = CGSizeMake(widthFromFrame(addView), widthFromFrame(addView)/(_originalImageView.image.size.width/_originalImageView.image.size.height));
-    CGSize contentSize = CGSizeMake(widthFromFrame(addView), MAX(imageSize.height, heightFromFrame(addView)));
+    CGSize imageSize = CGSizeMake(self.containerView.width, self.containerView.width/(_sourceImageView.image.size.width/_sourceImageView.image.size.height));
+    CGSize contentSize = CGSizeMake(self.containerView.width, MAX(imageSize.height, self.containerView.height));
     
     self.scrollView.contentSize = contentSize;
     self.imageContainerView.frame = CGRectMake(0, 0, contentSize.width, contentSize.height);
-    [self.imageContainerView addSubview:_originalImageView];
+    [self.imageContainerView addSubview:_sourceImageView];
     
     [UIView animateWithDuration:0.3f animations:^{
-        self.scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:1];
-        self.originalImageView.frame = CGRectMake(0, 0, imageSize.width, imageSize.height);
-        self.originalImageView.center = self.imageContainerView.center;
+        self.scrollView.backgroundColor = [self.backgroundColor colorWithAlphaComponent:1];
+        self.sourceImageView.frame = CGRectMake(0, 0, imageSize.width, imageSize.height);
+        self.sourceImageView.center = self.imageContainerView.center;
     } completion:nil];
 }
 
 - (void)hide{
-    CGRect rect = [self.originalImageView convertRect:self.originalImageView.bounds toView:[self addToView]];
-    [self.originalImageView removeFromSuperview];
-    self.originalImageView.frame = rect;
-    [[self addToView] addSubview:self.originalImageView];
+    CGRect rect = [self.sourceImageView convertRect:self.sourceImageView.bounds toView:self.containerView];
+    [self.sourceImageView removeFromSuperview];
+    self.sourceImageView.frame = rect;
+    [self.containerView addSubview:self.sourceImageView];
     
     [UIView animateWithDuration:0.3f animations:^{
-        self.scrollView.backgroundColor = [self.bgColor colorWithAlphaComponent:0];
-        self.originalImageView.frame = self.startAnimationRect;
+        self.scrollView.backgroundColor = [self.backgroundColor colorWithAlphaComponent:0];
+        self.sourceImageView.frame = self.startAnimationRect;
     } completion:^(BOOL finished) {
         self.isShow = NO;
         self.scrollView.zoomScale = 1;
         self.imageContainerView.transform = CGAffineTransformIdentity;
-        [self.originalImageView removeFromSuperview];
+        [self.sourceImageView removeFromSuperview];
         [self.scrollView removeFromSuperview];
         [self.scrollView setContentOffset:CGPointMake(0, 0)];
-        self.originalImageView.frame = self.startRect;
-        [self.originalImageViewSuperView addSubview:self.originalImageView];
+        self.sourceImageView.frame = self.startRect;
+        [self.sourceImageViewSuperView addSubview:self.sourceImageView];
     }];
 }
 
-
-- (void)setAllowScale:(BOOL)allowScale{
-    [self.originalImageView removeGestureRecognizer:_tapAction];
-    [self.originalImageView removeGestureRecognizer:_doubleTapAction];
-    if(allowScale){
+- (void)setBrowseEnabled:(BOOL)browseEnabled{
+    [self.sourceImageView removeGestureRecognizer:_tapAction];
+    [self.sourceImageView removeGestureRecognizer:_doubleTapAction];
+    if(browseEnabled){
         if(!_tapAction){
             _tapAction = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapActionEvent)];
             _tapAction.numberOfTapsRequired = 1;
@@ -136,10 +125,10 @@ if(self.scrollView.zoomScale == 1){ \
         }
         
         [_tapAction requireGestureRecognizerToFail:_doubleTapAction];
-        [self.originalImageView addGestureRecognizer:_tapAction];
-        [self.originalImageView addGestureRecognizer:_doubleTapAction];
+        [self.sourceImageView addGestureRecognizer:_tapAction];
+        [self.sourceImageView addGestureRecognizer:_doubleTapAction];
     }
-    _allowScale = allowScale;
+    _browseEnabled = browseEnabled;
 }
 
 - (void)tapActionEvent{
@@ -151,12 +140,14 @@ if(self.scrollView.zoomScale == 1){ \
 }
 
 - (void)configScrollView{
-    _scrollView = [[UIScrollView alloc] initWithFrame:[self addToView].frame];
-    _scrollView.backgroundColor = _bgColor;
+    _scrollView = [[UIScrollView alloc] initWithFrame:self.containerView.frame];
+    _scrollView.backgroundColor = _backgroundColor;
     _scrollView.delegate = self;
     _scrollView.minimumZoomScale = 1;
     _scrollView.maximumZoomScale = 4;
-    _scrollView.contentSize = [self addToView].frame.size;
+    _scrollView.contentSize = self.containerView.size;
+    _scrollView.alwaysBounceVertical = YES;
+    _scrollView.alwaysBounceHorizontal = YES;
     
     UITapGestureRecognizer *one_tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(scroll_tapAction)];
     one_tap.numberOfTapsRequired = 1;
@@ -170,16 +161,17 @@ if(self.scrollView.zoomScale == 1){ \
     
     _imageContainerView = [[UIView alloc] init];
     _imageContainerView.clipsToBounds = YES;
+    _imageContainerView.backgroundColor = [UIColor clearColor];
     [_scrollView addSubview:_imageContainerView];
 }
 
-- (UIView *)addToView{
+- (UIView *)containerView{
     AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     return appdelegate.window;
 }
 
 - (CGRect)imageViewFrameOnKeyWindow{
-    return [self.originalImageView convertRect:self.originalImageView.bounds toView:[self addToView]];
+    return [self.sourceImageView convertRect:self.sourceImageView.bounds toView:self.containerView];
 }
 
 #pragma mark - scrollView some method
@@ -195,8 +187,8 @@ if(self.scrollView.zoomScale == 1){ \
     } else {
         CGPoint touchPoint = [tap locationInView:self.imageContainerView];
         CGFloat newZoomScale = _scrollView.maximumZoomScale;
-            CGFloat xsize = self.scrollView.frame.size.width /newZoomScale;
-        CGFloat ysize = self.scrollView.frame.size.height / newZoomScale;
+        CGFloat xsize = self.scrollView.width /newZoomScale;
+        CGFloat ysize = self.scrollView.height / newZoomScale;
         [_scrollView zoomToRect:CGRectMake(touchPoint.x - xsize/2, touchPoint.y - ysize/2, xsize, ysize) animated:YES];
     }
 }
@@ -210,6 +202,12 @@ if(self.scrollView.zoomScale == 1){ \
 }
 
 #pragma mark - scrollview delegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    if ((scrollView.contentOffset.y < 0 || self.doingPan) && (self.doingZoom == NO)){
+        [self panAction:scrollView.panGestureRecognizer];
+    }
+}
+
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView{
     return _imageContainerView;
 }
@@ -218,38 +216,48 @@ if(self.scrollView.zoomScale == 1){ \
     CGFloat offsetX = (scrollView.frame.size.width > scrollView.contentSize.width) ? (scrollView.frame.size.width - scrollView.contentSize.width) * 0.5 : 0.0;
     CGFloat offsetY = (scrollView.frame.size.height > scrollView.contentSize.height) ? (scrollView.frame.size.height - scrollView.contentSize.height) * 0.5 : 0.0;
     _imageContainerView.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY);
+    
+    self.doingZoom = NO;
+}
+
+- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view{
+    self.doingZoom = YES;
+}
+
+//结束拖拽
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
+    [self endPan];
 }
 
 @end
 
-
-@implementation UIImageView (Zoom)
+@implementation UIImageView (browse)
 
 - (FCImageViewScaleExtension *)extension{
     FCImageViewScaleExtension *extension = objc_getAssociatedObject(self, _cmd);
     if(!extension){
         extension = [[FCImageViewScaleExtension alloc] init];
-        extension.originalImageView = self;
+        extension.sourceImageView = self;
         objc_setAssociatedObject(self, _cmd, extension, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return extension;
 }
 
-- (void)setAllowScale:(BOOL)allowScale{
-    self.userInteractionEnabled = allowScale;
-    [self extension].allowScale = allowScale;
+- (void)setBrowseEnabled:(BOOL)browseEnabled{
+    self.userInteractionEnabled = browseEnabled;
+    [self extension].browseEnabled = browseEnabled;
 }
 
-- (BOOL)allowScale{
-    return [self extension].allowScale;
+- (BOOL)browseEnabled{
+    return [self extension].browseEnabled;
 }
 
-- (void)setBgColor:(UIColor *)bgColor{
-    [self extension].bgColor = bgColor;
+- (void)setBackgroundColor:(UIColor *)backgroundColor{
+    [self extension].backgroundColor = backgroundColor;
 }
 
-- (UIColor *)bgColor{
-    return [self extension].bgColor;
+- (UIColor *)backgroundColor{
+    return [self extension].backgroundColor;
 }
 
 - (longPressedAction)longPressedBlock{

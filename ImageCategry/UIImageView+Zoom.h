@@ -11,12 +11,12 @@
 //长按
 typedef void(^longPressedAction)();
 
-@interface UIImageView (Zoom)
+@interface UIImageView (browse)
 //是否允许缩放
-@property (nonatomic) BOOL allowScale;
+@property (nonatomic) BOOL browseEnabled;
 //背景色 默认黑色
-@property (nonatomic, strong) UIColor *bgColor;
-
+@property (nonatomic, strong) UIColor *backgroundColor;
+//长按block
 @property (nonatomic, copy) longPressedAction longPressedBlock;
 
 @end

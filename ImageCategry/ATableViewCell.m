@@ -29,7 +29,7 @@
         _imageView.contentMode = UIViewContentModeScaleAspectFill;
         _imageView.clipsToBounds = YES;
         _imageView.image = [UIImage imageNamed:@"test_image"];
-        _imageView.allowScale = YES;
+        _imageView.browseEnabled = YES;
     }
     return self;
 }
