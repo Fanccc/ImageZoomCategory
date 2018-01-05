@@ -8,11 +8,9 @@
 
 #import "ViewController.h"
 #import "UIImageView+Browse.h"
-#import "ATableViewCell.h"
-#import "FCImage.h"
-#import "BViewController.h"
 
-@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate>
+
+@interface ViewController ()
 
 @property (nonatomic, strong) UIImageView *imageView;
 
@@ -36,37 +34,7 @@
     //longImage_v
     _imageView.browseEnabled = YES;
 
-    return;
-//    _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
-//    [_tableView registerClass:[ATableViewCell class] forCellReuseIdentifier:@"a"];
-//    _tableView.delegate = self;
-//    _tableView.dataSource = self;
-//    [self.view addSubview:_tableView];
-}
 
-
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    NSLog(@"scroll");
-}
-
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 20;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    ATableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"a" forIndexPath:indexPath];
-    return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    BViewController *b = [[BViewController alloc] init];
-    [self.navigationController pushViewController:b animated:YES];
-}
-
-- (BOOL)prefersStatusBarHidden{
-    return NO;
 }
 
 @end

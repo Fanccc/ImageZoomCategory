@@ -1,11 +1,3 @@
-//
-//  UIView+Size.h
-//  SohuReader
-//
-//  Created by li jiaming on 12-9-29.
-//
-//
-
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
