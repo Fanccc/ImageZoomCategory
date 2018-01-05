@@ -221,11 +221,11 @@
     return [self extension].browseEnabled;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor{
-    [self extension].backgroundColor = backgroundColor;
+- (void)setBrowseBackgroundColor:(UIColor *)browseBackgroundColor{
+    [self extension].backgroundColor = browseBackgroundColor;
 }
 
-- (UIColor *)backgroundColor{
+- (UIColor *)browseBackgroundColor{
     return [self extension].backgroundColor;
 }
 

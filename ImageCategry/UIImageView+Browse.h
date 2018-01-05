@@ -15,7 +15,7 @@ typedef void(^longPressedAction)();
 //是否允许缩放
 @property (nonatomic) BOOL browseEnabled;
 //背景色 默认黑色
-@property (nonatomic, strong) UIColor *backgroundColor;
+@property (nonatomic, strong) UIColor *browseBackgroundColor;
 //长按block
 @property (nonatomic, copy) longPressedAction longPressedBlock;
 
