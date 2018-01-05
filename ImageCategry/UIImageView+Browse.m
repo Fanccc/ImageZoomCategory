@@ -6,7 +6,7 @@
 //  Copyright © 2017年 fanchuan. All rights reserved.
 //
 
-#import "UIImageView+Zoom.h"
+#import "UIImageView+Browse.h"
 #import "AppDelegate.h"
 #import "UIView+Sizes.h"
 #import <objc/runtime.h>

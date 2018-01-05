@@ -7,7 +7,7 @@
 //
 
 #import "ATableViewCell.h"
-#import "UIImageView+Zoom.h"
+#import "UIImageView+Browse.h"
 
 @implementation ATableViewCell
 

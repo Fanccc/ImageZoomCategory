@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "UIImageView+Zoom.h"
+#import "UIImageView+Browse.h"
 #import "ATableViewCell.h"
 #import "FCImage.h"
 #import "BViewController.h"
@@ -30,7 +30,7 @@
     [self.view addSubview:_imageView];
     _imageView.contentMode = UIViewContentModeScaleAspectFill;
     _imageView.clipsToBounds = YES;
-    _imageView.image = [UIImage imageNamed:@"test_image"];
+    _imageView.image = [UIImage imageNamed:@"longImage"];
     //test_image
     //longImage
     //longImage_v
